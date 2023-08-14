@@ -1,13 +1,34 @@
 import java.nio.file.Files
 
 buildscript {
-  repositories {
-    mavenCentral()
-    mavenLocal()
-  }
+  apply from: 'build-tools/repositories.gradle'
 
+  ext {
+    opensearch_version = System.getProperty("opensearch.version", "3.0.0-SNAPSHOT")
+    buildVersionQualifier = System.getProperty("build.version_qualifier", "")
+    isSnapshot = "true" == System.getProperty("build.snapshot", "true")
+    // 3.0.0-SNAPSHOT -> 3.0.0.0-SNAPSHOT
+    version_tokens = opensearch_version.tokenize('-')
+    opensearch_build = version_tokens[0] + '.0'
+    plugin_no_snapshot = opensearch_build
+    if (buildVersionQualifier) {
+      opensearch_build += "-${buildVersionQualifier}"
+      plugin_no_snapshot += "-${buildVersionQualifier}"
+    }
+    if (isSnapshot) {
+      opensearch_build += "-SNAPSHOT"
+    }
+    opensearch_no_snapshot = opensearch_version.replace("-SNAPSHOT","")
+    common_utils_version = System.getProperty("common_utils.version", opensearch_build)
+  }
+  repositories {
+    mavenLocal()
+    maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
+    mavenCentral()
+    maven { url "https://plugins.gradle.org/m2/" }
+  }
   dependencies {
-    classpath "org.opensearch.gradle:build-tools:${opensearchVersion}"
+    classpath "org.opensearch.gradle:build-tools:${opensearch_version}"
   }
 }
 
@@ -55,10 +76,10 @@ opensearchplugin {
 
 // In this section you declare the dependencies for your production and test code
 // OpenSearch dependency is included due to the build-tools, test-framework as well
-repositories {
+/*repositories {
   mavenCentral()
   mavenLocal()
-}
+}*/
 
 dependencies {
   implementation "org.apache.lucene:lucene-expressions:${luceneVersion}"
