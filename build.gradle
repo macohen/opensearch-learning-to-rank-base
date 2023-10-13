@@ -1,7 +1,7 @@
 import java.nio.file.Files
 
 buildscript {
-  apply from: 'build-tools/repositories.gradle'
+  //apply from: 'build-tools/repositories.gradle'
 
   ext {
     opensearch_version = System.getProperty("opensearch.version", "3.0.0-SNAPSHOT")
@@ -74,13 +74,6 @@ opensearchplugin {
   noticeFile = rootProject.file('NOTICE.txt')
 }
 
-// In this section you declare the dependencies for your production and test code
-// OpenSearch dependency is included due to the build-tools, test-framework as well
-/*repositories {
-  mavenCentral()
-  mavenLocal()
-}*/
-
 dependencies {
   implementation "org.apache.lucene:lucene-expressions:${luceneVersion}"
   implementation "org.antlr:antlr4-runtime:${antlrVersion}"
@@ -90,10 +83,8 @@ dependencies {
   implementation 'com.o19s:RankyMcRankFace:0.1.1'
   implementation "com.github.spullara.mustache.java:compiler:0.9.3"
 
-  //testImplementation 'org.apache.lucene:lucene-test-framework:${luceneVersion}'
   runtimeOnly 'org.locationtech.spatial4j:spatial4j:0.7'
   runtimeOnly 'org.locationtech.jts:jts-core:1.15.0'
-  runtimeOnly 'org.apache.logging.log4j:log4j-core:2.17.1'
 }
 
 
